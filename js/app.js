@@ -14,6 +14,8 @@ let leftImageIndex;
 let midImageIndex; 
 let rightImageIndex; 
 
+Product.allProducts=[];
+
 let pNames=[];
 let pVotes=[];
 let pShown=[];
@@ -32,8 +34,6 @@ pNames.push(this.nameProd);
 }
 
 //console.log(pNames)
-
-Product.allProducts=[];
 
 new Product('bag','img/bag.jpg');
 new Product('banana','img/banana.jpg');
@@ -126,7 +126,7 @@ function generateRandomIndex() {
      else if(event.target.id='mid-image'){
         Product.allProducts[midImageIndex].votes++;
     }
-    else{
+    else if(event.target.id='right-image'){
         Product.allProducts[rightImageIndex].votes++;
     }
 
@@ -149,9 +149,12 @@ function generateRandomIndex() {
        
         allImgElements.removeEventListener('click',userClick);
 
+       updateProdStorage();
+
        for(let i=0;i<Product.allProducts.length;i++){
            pVotes.push(Product.allProducts[i].votes);
            pShown.push(Product.allProducts[i].timesImgShown);
+         
        }
 
         chart();
@@ -183,7 +186,7 @@ function generateRandomIndex() {
      button.removeEventListener('click', butClick);
 
  }
- 
+
  
  //========================================================lab12 Chartjs=======================================================
 
@@ -252,5 +255,33 @@ function chart(){
  
 }
 
+//=========================================================lab13 local storage======================================
 
 
+// put my product data on local storage after convert my objects to strings then call it after votes
+function updateProdStorage(){
+  //console.log(Product.allProducts);
+// covert these objects to strings , using json.stringfy
+let stringProducts= JSON.stringify(Product.allProducts);
+ console.log(stringProducts);
+
+ // add stringPr to local storage
+ let localStorStrings= localStorage.setItem('BussMall SProducts',stringProducts);
+}
+
+
+// get the data from local storage then retreive to objects (convert them again from strings to objects). 
+
+function gettingProdStorage(){
+    let localStorObjects= localStorage.getItem('BussMall SProducts');
+    localStorObjects= JSON.parse(localStorObjects);
+
+ // then make the array of objects Product.allProduct equal to the object items(products) insid local storage (fill the array),
+// if its not the first time we visit the web page(!=null).
+      if( localStorObjects != null){
+    //put local storage inside our array to keep them when refreshing 
+       Product.allProducts= localStorObjects;
+       }
+}
+
+gettingProdStorage();
